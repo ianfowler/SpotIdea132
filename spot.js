@@ -86,6 +86,7 @@
       });
   }
 
+  // Functions to grab info from album data
   function getAlbumName(album) {
     return album.name;
   }
@@ -99,13 +100,40 @@
     return release_date.getFullYear();
   }
 
-  function getTrackNames(album) {
-    return album.tracks.items.map((item) => item.name);
+  function getTracks(album) {
+    const tracks = album.tracks.items;
+    let gameIdxs = [...Array(tracks.length).keys()];
+    gameIdxs.sort(() => Math.random() - 0.5);
+
+    return tracks.map((track, idx) => {
+      return {
+        name: track.name,
+        actualIdx: idx,
+        gameIdx: gameIdxs[idx],
+      };
+    });
   }
 
   function getAlbumImageSrc(album) {
     return album.images[0].url;
   }
+
+  // function buildTrackElement(name) {
+  //   let a = document.createElement("article");
+
+  //   // let h3 =
+  //   let img = document.createElement("img");
+  //   img.src = info.images[0].url;
+  //   img.alt = "album art";
+
+  //   let title = document.createElement("h2");
+  //   title.textContent = info.name;
+
+  //   a.appendChild(img);
+  //   a.appendChild(title);
+
+  //   return a;
+  // }
 
   // Pixies 0DQyTVcDhK9wm0f6RaErWO
   function getAlbumInfo() {
@@ -121,11 +149,7 @@
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        console.log(getTrackNames(data));
-        console.log(getReleaseYear(data));
-        console.log(getArtistsDescription(data));
-        console.log(getAlbumName(data));
-        console.log(getAlbumImageSrc(data));
+        console.log(getTracks(data));
       });
   }
 
