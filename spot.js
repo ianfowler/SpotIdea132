@@ -118,28 +118,32 @@
     return album.images[0].url;
   }
 
-  // function buildTrackElement(name) {
-  //   let a = document.createElement("article");
+  function buildTrackElement(track) {
+    let a = document.createElement("article");
 
-  //   // let h3 =
-  //   let img = document.createElement("img");
-  //   img.src = info.images[0].url;
-  //   img.alt = "album art";
+    let h3 = document.createElement("h3");
+    h3.textContent = track.name;
+    a.appendChild(h3);
 
-  //   let title = document.createElement("h2");
-  //   title.textContent = info.name;
+    let btnContainer = document.createElement("div");
 
-  //   a.appendChild(img);
-  //   a.appendChild(title);
+    let upBtn = document.createElement("button");
+    upBtn.textContent = "Up";
+    btnContainer.appendChild(upBtn);
 
-  //   return a;
-  // }
+    let downBtn = document.createElement("button");
+    downBtn.textContent = "Down";
+    btnContainer.appendChild(downBtn);
+
+    a.appendChild(btnContainer);
+    return a;
+  }
 
   // Pixies 0DQyTVcDhK9wm0f6RaErWO
   function getAlbumInfo() {
     let url = BASE_URL + "albums/";
-    let id = "0DQyTVcDhK9wm0f6RaErWO";
-    url += id;
+    let albumId = "0DQyTVcDhK9wm0f6RaErWO";
+    url += albumId;
 
     fetch(url, {
       headers: {
@@ -149,7 +153,13 @@
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        console.log(getTracks(data));
+        let resultArea = id("track-container");
+        resultArea.innerHTML = "";
+        getTracks(data)
+          .map(buildTrackElement)
+          .map((e) => {
+            resultArea.appendChild(e);
+          });
       });
   }
 
