@@ -27,7 +27,7 @@
     let input = qs("input");
 
     input.addEventListener('change', (e) => {
-      searchArtist(input.value);
+      search(input.value);
     });
   }
 
