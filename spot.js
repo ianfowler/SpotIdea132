@@ -32,6 +32,12 @@
     input.addEventListener("change", (e) => {
       search(input.value);
     });
+
+    let doneBtn = qs("#play-view > button");
+
+    doneBtn.addEventListener("click", (e) => {
+      populateScore();
+    });
   }
 
   /**
@@ -208,6 +214,26 @@
         tracks = getTracks(data);
         populateTracks();
       });
+  }
+
+  /**
+   * Compute the normalized kendall distance between the in game ordering
+   * and the proper ordering of the tracks.
+   */
+  function computeScore() {
+    // The tracks array is in order based on gameIdx.
+    // Mapping each track to the actualIdx will give the permutation
+    // we want.
+    let kd = kendall(tracks.map((t) => t.actualIdx));
+    return (kd / (tracks.length * (tracks.length - 1))) * 2;
+  }
+
+  /**
+   * Call computeScore and display the result on the page.
+   */
+  function populateScore() {
+    let e = qs("#results-view p");
+    e.textContent = (computeScore() * 100).toFixed(2) + "%";
   }
 
   init();
