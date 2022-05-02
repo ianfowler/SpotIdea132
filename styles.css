@@ -41,22 +41,25 @@ section {
   align-items: center;
 }
 
-.cell, .cell > div {
-  display: flex;
-}
-
 #track-container {
   padding: 10px;
   width: 90%;
   border: 1px solid red;
 }
 
-.cell {
+#track-container button {
+  margin-left: 10px;
+}
+
+#track-container article {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   border: 0.1em solid brown;
   height: 50px;
   margin-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #play-view > button {
