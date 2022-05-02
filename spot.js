@@ -249,7 +249,7 @@
     // Mapping each track to the actualIdx will give the permutation
     // we want.
     let kd = kendall(tracks.map((t) => t.actualIdx));
-    return (kd / (tracks.length * (tracks.length - 1))) * 2;
+    return 1-(kd / (tracks.length * (tracks.length - 1))) * 2;
   }
 
   /**
