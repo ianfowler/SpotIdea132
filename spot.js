@@ -31,8 +31,8 @@
     // Event handler for searching...
     let input = qs("input");
 
-    input.addEventListener("change", (e) => {
-      searchArtist(input.value);
+    input.addEventListener('change', (e) => {
+      search(input.value);
     });
   }
 
@@ -53,8 +53,16 @@
     let title = document.createElement("h2");
     title.textContent = info.name;
 
+    let artist = document.createElement('p');
+    artist.textContent = info.artists[0].name;
+
+    let trackCount = document.createElement('p');
+    trackCount.textContent = info.total_tracks + ' Tracks';
+
     a.appendChild(img);
     a.appendChild(title);
+    a.appendChild(artist);
+    a.appendChild(trackCount);
 
     return a;
   }
@@ -63,16 +71,17 @@
    * Make a request to the Spotify API for albums by the given
    * artist.
    *
-   * Use the response to build the album elements on the page...
+   * Use the response to build the album elements on the page.
    *
    * @param {string} name - name of the artist
    */
-  function searchArtist(name) {
-    // We search by making a request to this endpoint.
-    // We tell it we want albums and to filter by artist name...
-    // We may just want to directly pass the query instead of filtering by artist...
-    // TODO: we will need to URL encode the query... i havent done that yet...
-    fetch(`https://api.spotify.com/v1/search?type=album&q=artist:${name}`, {
+  function search(name) {
+    // Prepare to use name in a URI query param
+    name = encodeURIComponent(name);
+
+    // We search by making a request to this endpoint
+    // We tell it we want albums and give it the query
+    fetch(`https://api.spotify.com/v1/search?type=album&q=${name}`, {
       headers: {
         Authorization: "Bearer " + accessToken,
       },
