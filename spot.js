@@ -151,7 +151,6 @@
     let resultArea = id("track-container");
     resultArea.innerHTML = "";
     sortTracksByGameIdx();
-    console.log(tracks);
     tracks.map(buildTrackElement).map((e) => {
       resultArea.appendChild(e);
     });
