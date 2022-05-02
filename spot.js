@@ -24,14 +24,12 @@
       .then((data) => {
         // Once we receive the access token we store it in a global...
         accessToken = data.access_token;
-
-        getAlbumInfo();
       });
 
     // Event handler for searching...
     let input = qs("input");
 
-    input.addEventListener('change', (e) => {
+    input.addEventListener("change", (e) => {
       search(input.value);
     });
   }
@@ -45,19 +43,20 @@
    */
   function buildAlbumElement(info) {
     let a = document.createElement("article");
+    a.addEventListener("click", () => populateAlbum(info.id));
 
     let img = document.createElement("img");
     img.src = info.images[0].url;
     img.alt = "album art";
 
-    let title = document.createElement("h2");
+    let title = document.createElement("h3");
     title.textContent = info.name;
 
-    let artist = document.createElement('p');
+    let artist = document.createElement("p");
     artist.textContent = info.artists[0].name;
 
-    let trackCount = document.createElement('p');
-    trackCount.textContent = info.total_tracks + ' Tracks';
+    let trackCount = document.createElement("p");
+    trackCount.textContent = info.total_tracks + " Tracks";
 
     a.appendChild(img);
     a.appendChild(title);
@@ -91,9 +90,12 @@
         console.log(data);
         let resultArea = id("search-results");
         resultArea.innerHTML = "";
-        data.albums.items.map(buildAlbumElement).map((e) => {
-          resultArea.appendChild(e);
-        });
+        data.albums.items
+          .filter((album) => album.total_tracks > 1)
+          .map(buildAlbumElement)
+          .map((e) => {
+            resultArea.appendChild(e);
+          });
       });
   }
 
@@ -194,12 +196,8 @@
   }
 
   // Pixies 0DQyTVcDhK9wm0f6RaErWO
-  function getAlbumInfo() {
-    let url = BASE_URL + "albums/";
-    let albumId = "0DQyTVcDhK9wm0f6RaErWO";
-    url += albumId;
-
-    fetch(url, {
+  function populateAlbum(albumId) {
+    fetch(BASE_URL + "albums/" + albumId, {
       headers: {
         Authorization: "Bearer " + accessToken,
       },

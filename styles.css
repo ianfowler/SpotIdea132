@@ -28,10 +28,6 @@ input {
 
 }
 
-img {
-  max-width: 100px;
-}
-
 section {
   border: 0.1em solid black;
   width: 90%;
@@ -39,6 +35,31 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#search-results {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#search-results article {
+  display: flex;
+  width: 160px;
+  flex-direction: column;
+  margin: 5px;
+  background-color: #eee;
+}
+
+#search-results img {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+#search-results p, #search-results h3 {
+  margin: 0;
+  word-wrap: break-word;
 }
 
 #track-container {
