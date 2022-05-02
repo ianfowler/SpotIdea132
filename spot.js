@@ -5,6 +5,8 @@
   const CLIENT_SECRET = "6a43cc4881f14290a5f485e60c88bc50";
   let accessToken;
 
+  let tracks;
+
   function init() {
     // We make a POST request to this endpoint to get an 'accessToken'
     // based on the client information...
@@ -129,14 +131,58 @@
 
     let upBtn = document.createElement("button");
     upBtn.textContent = "Up";
+    upBtn.addEventListener("click", () => moveTrackUp(track.gameIdx));
     btnContainer.appendChild(upBtn);
 
     let downBtn = document.createElement("button");
     downBtn.textContent = "Down";
+    downBtn.addEventListener("click", () => moveTrackDown(track.gameIdx));
     btnContainer.appendChild(downBtn);
 
     a.appendChild(btnContainer);
     return a;
+  }
+
+  function sortTracksByGameIdx() {
+    tracks.sort((a, b) => a.gameIdx - b.gameIdx);
+  }
+
+  function populateTracks() {
+    let resultArea = id("track-container");
+    resultArea.innerHTML = "";
+    sortTracksByGameIdx();
+    console.log(tracks);
+    tracks.map(buildTrackElement).map((e) => {
+      resultArea.appendChild(e);
+    });
+  }
+
+  function moveTrackUp(currentGameIdx) {
+    if (currentGameIdx === 0) return;
+    const tempTrack = {
+      ...tracks[currentGameIdx - 1],
+      gameIdx: currentGameIdx,
+    };
+    tracks[currentGameIdx - 1] = {
+      ...tracks[currentGameIdx],
+      gameIdx: currentGameIdx - 1,
+    };
+    tracks[currentGameIdx] = tempTrack;
+    populateTracks();
+  }
+
+  function moveTrackDown(currentGameIdx) {
+    if (currentGameIdx === tracks.length - 1) return;
+    const tempTrack = {
+      ...tracks[currentGameIdx + 1],
+      gameIdx: currentGameIdx,
+    };
+    tracks[currentGameIdx + 1] = {
+      ...tracks[currentGameIdx],
+      gameIdx: currentGameIdx + 1,
+    };
+    tracks[currentGameIdx] = tempTrack;
+    populateTracks();
   }
 
   // Pixies 0DQyTVcDhK9wm0f6RaErWO
@@ -153,13 +199,8 @@
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        let resultArea = id("track-container");
-        resultArea.innerHTML = "";
-        getTracks(data)
-          .map(buildTrackElement)
-          .map((e) => {
-            resultArea.appendChild(e);
-          });
+        tracks = getTracks(data);
+        populateTracks();
       });
   }
 
