@@ -28,7 +28,6 @@ input {
 
 }
 
-
 img {
   max-width: 100px;
 }
@@ -37,4 +36,29 @@ section {
   border: 0.1em solid black;
   width: 90%;
   max-width: 1020px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cell, .cell > div {
+  display: flex;
+}
+
+#track-container {
+  padding: 10px;
+  width: 90%;
+  border: 1px solid red;
+}
+
+.cell {
+  justify-content: space-between;
+  align-items: center;
+  border: 0.1em solid brown;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+#play-view > button {
+  margin: 10px;
 }
