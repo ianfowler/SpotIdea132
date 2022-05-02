@@ -1,7 +1,8 @@
 "use strict";
 (function () {
-  const clientId = "f1799ce82c5540c4b0d6fe8c196e654b";
-  const clientSecret = "6a43cc4881f14290a5f485e60c88bc50";
+  const BASE_URL = "https://api.spotify.com/v1/";
+  const CLIENT_ID = "f1799ce82c5540c4b0d6fe8c196e654b";
+  const CLIENT_SECRET = "6a43cc4881f14290a5f485e60c88bc50";
   let accessToken;
 
   function init() {
@@ -12,7 +13,7 @@
     fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
-        Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
+        Authorization: "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET),
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: "grant_type=client_credentials",
@@ -21,6 +22,8 @@
       .then((data) => {
         // Once we receive the access token we store it in a global...
         accessToken = data.access_token;
+
+        getAlbumInfo();
       });
 
     // Event handler for searching...
@@ -74,11 +77,55 @@
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         let resultArea = id("search-results");
         resultArea.innerHTML = "";
         data.albums.items.map(buildAlbumElement).map((e) => {
           resultArea.appendChild(e);
         });
+      });
+  }
+
+  function getAlbumName(album) {
+    return album.name;
+  }
+
+  function getArtistsDescription(album) {
+    return album.artists.map((item) => item.name).join(", ");
+  }
+
+  function getReleaseYear(album) {
+    const release_date = new Date(album.release_date);
+    return release_date.getFullYear();
+  }
+
+  function getTrackNames(album) {
+    return album.tracks.items.map((item) => item.name);
+  }
+
+  function getAlbumImageSrc(album) {
+    return album.images[0].url;
+  }
+
+  // Pixies 0DQyTVcDhK9wm0f6RaErWO
+  function getAlbumInfo() {
+    let url = BASE_URL + "albums/";
+    let id = "0DQyTVcDhK9wm0f6RaErWO";
+    url += id;
+
+    fetch(url, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        console.log(getTrackNames(data));
+        console.log(getReleaseYear(data));
+        console.log(getArtistsDescription(data));
+        console.log(getAlbumName(data));
+        console.log(getAlbumImageSrc(data));
       });
   }
 
