@@ -37,6 +37,7 @@
 
     doneBtn.addEventListener("click", (e) => {
       populateScore();
+      populateOrderings();
     });
   }
 
@@ -164,6 +165,10 @@
     tracks.sort((a, b) => a.gameIdx - b.gameIdx);
   }
 
+  function sortTracksByActualIdx() {
+    tracks.sort((a, b) => a.actualIdx - b.actualIdx);
+  }
+
   function populateTracks() {
     let resultArea = id("track-container");
     resultArea.innerHTML = "";
@@ -201,7 +206,6 @@
     populateTracks();
   }
 
-  // Pixies 0DQyTVcDhK9wm0f6RaErWO
   function populateAlbum(albumId) {
     fetch(BASE_URL + "albums/" + albumId, {
       headers: {
@@ -214,6 +218,26 @@
         tracks = getTracks(data);
         populateTracks();
       });
+  }
+
+  function populateOrderings() {
+    let actual = id("actual-ordering");
+    actual.innerHTML = "";
+    sortTracksByActualIdx();
+    tracks.map((track) => {
+      let li = document.createElement("li");
+      li.textContent = track.name;
+      actual.appendChild(li);
+    });
+
+    let user = id("your-ordering");
+    user.innerHTML = "";
+    sortTracksByGameIdx();
+    tracks.map((track) => {
+      let li = document.createElement("li");
+      li.textContent = track.name;
+      user.appendChild(li);
+    });
   }
 
   /**
