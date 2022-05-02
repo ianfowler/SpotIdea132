@@ -48,8 +48,16 @@
     let title = document.createElement('h2');
     title.textContent = info.name;
 
+    let artist = document.createElement('p');
+    artist.textContent = info.artists[0].name;
+
+    let trackCount = document.createElement('p');
+    trackCount.textContent = info.total_tracks + ' Tracks';
+
     a.appendChild(img);
     a.appendChild(title);
+    a.appendChild(artist);
+    a.appendChild(trackCount);
 
     return a;
   }
