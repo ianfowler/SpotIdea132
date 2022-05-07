@@ -120,18 +120,24 @@
     return release_date.getFullYear();
   }
 
+  /**
+   * Takes the album object and returns a list of the more
+   * complete track objects using the 'tracks/' endpoint.
+   *
+   * @param {object} album - the album as acquired from the 'album/' endpoint
+   * @return {Promise} returned by the fetch
+   */
   function getTracks(album) {
-    const tracks = album.tracks.items;
-    let gameIdxs = [...Array(tracks.length).keys()];
-    gameIdxs.sort(() => Math.random() - 0.5);
-
-    return tracks.map((track, idx) => {
-      return {
-        name: track.name,
-        actualIdx: idx,
-        gameIdx: gameIdxs[idx],
-      };
-    });
+    // The references specifies 50 uris max...
+    // Im not checking... are there any albums that big?
+    
+    let trackIdList = album.tracks.items.map((t) => t.id).join(",");
+    return fetch(BASE_URL + "tracks?ids=" + trackIdList, {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+      .then((response) => response.json());
   }
 
   function getAlbumImageSrc(album) {
@@ -213,11 +219,25 @@
       },
     })
       .then((response) => response.json())
+      .then(getTracks)
       .then((data) => {
-        console.log(data);
-        tracks = getTracks(data);
-        populateTracks();
-      });
+        let gameIdxs = [...Array(data.tracks.length).keys()];
+        gameIdxs.sort(() => Math.random() - 0.5);
+
+        // Sort tracks by popularity before generating the
+        // simplified object list. The acutalIdx will then
+        // be based on popularity.
+        data.tracks.sort((a,b) => b.popularity - a.popularity);
+
+        tracks = data.tracks.map((t,i) => { return {
+          actualIdx: i,
+          gameIdx: gameIdxs[i],
+          name: t.name
+        }});
+
+        sortTracksByGameIdx();
+      })
+      .then(populateTracks)
   }
 
   function populateOrderings() {
