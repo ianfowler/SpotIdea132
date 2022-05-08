@@ -29,6 +29,12 @@
    * client information.
    * 
    * Fills the accessToken global.
+   *
+   * TODO: I added this so that we could potentially delay registering
+   *       handlers until we have a valid access token...
+   *
+   * @return {Promise} a promise which is fulfilled after the
+   *                   access token is filled.
    */
   function getAccessToken() {
   }
