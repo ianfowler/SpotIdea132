@@ -42,40 +42,7 @@
   }
 
   /**
-   * Takes info about an album and returns a DOM element
-   * representing that info.
-   *
-   * @param {object} info - an object as described here: https://developer.spotify.com/documentation/web-api/reference/#/operations/get-an-album
-   * @return {DOMElement} The element representing that album
-   */
-  function buildAlbumElement(info) {
-    let a = document.createElement("article");
-    a.addEventListener("click", () => populateAlbum(info.id));
-
-    let img = document.createElement("img");
-    img.src = info.images[0].url;
-    img.alt = "album art";
-
-    let title = document.createElement("h3");
-    title.textContent = info.name;
-
-    let artist = document.createElement("p");
-    artist.textContent = info.artists[0].name;
-
-    let trackCount = document.createElement("p");
-    trackCount.textContent = info.total_tracks + " Tracks";
-
-    a.appendChild(img);
-    a.appendChild(title);
-    a.appendChild(artist);
-    a.appendChild(trackCount);
-
-    return a;
-  }
-
-  /**
-   * Make a request to the Spotify API for albums by the given
-   * artist.
+   * Make a request to the Spotify API for a given artist.
    *
    * Use the response to build the album elements on the page.
    *
@@ -87,7 +54,7 @@
 
     // We search by making a request to this endpoint
     // We tell it we want albums and give it the query
-    fetch(`https://api.spotify.com/v1/search?type=album&q=${name}`, {
+    fetch(`https://api.spotify.com/v1/search?type=artist&q=${name}`, {
       headers: {
         Authorization: "Bearer " + accessToken,
       },
@@ -97,45 +64,47 @@
         console.log(data);
         let resultArea = id("search-results");
         resultArea.innerHTML = "";
-        data.albums.items
-          .filter((album) => album.total_tracks > 1)
-          .map(buildAlbumElement)
-          .map((e) => {
-            resultArea.appendChild(e);
-          });
+
+        data.artists.items.map(buildArtistElement).map((e) => {
+          resultArea.appendChild(e);
+        });
       });
   }
 
-  // Functions to grab info from album data
-  function getAlbumName(album) {
-    return album.name;
-  }
+  // DOM BUILDING
 
-  function getArtistsDescription(album) {
-    return album.artists.map((item) => item.name).join(", ");
-  }
+  /**
+   * Takes info about an album and returns a DOM element
+   * representing that info.
+   *
+   * @param {object} info - an object as described here: https://developer.spotify.com/documentation/web-api/reference/#/operations/get-an-album
+   * @return {DOMElement} The element representing that album
+   */
+  function buildArtistElement(info) {
+    let a = document.createElement("article");
+    a.addEventListener("click", () => populateArtist(info.id));
 
-  function getReleaseYear(album) {
-    const release_date = new Date(album.release_date);
-    return release_date.getFullYear();
-  }
+    let img = document.createElement("img");
+    if (info.images[0]) {
+      img.src = info.images[0].url;
+    }
+    img.alt = info.name;
 
-  function getTracks(album) {
-    const tracks = album.tracks.items;
-    let gameIdxs = [...Array(tracks.length).keys()];
-    gameIdxs.sort(() => Math.random() - 0.5);
+    let title = document.createElement("h3");
+    title.textContent = info.name;
 
-    return tracks.map((track, idx) => {
-      return {
-        name: track.name,
-        actualIdx: idx,
-        gameIdx: gameIdxs[idx],
-      };
-    });
-  }
+    // let artist = document.createElement("p");
+    // artist.textContent = info.artists[0].name;
 
-  function getAlbumImageSrc(album) {
-    return album.images[0].url;
+    // let trackCount = document.createElement("p");
+    // trackCount.textContent = info.total_tracks + " Tracks";
+
+    a.appendChild(img);
+    a.appendChild(title);
+    // a.appendChild(artist);
+    // a.appendChild(trackCount);
+
+    return a;
   }
 
   function buildTrackElement(track) {
@@ -206,8 +175,8 @@
     populateTracks();
   }
 
-  function populateAlbum(albumId) {
-    fetch(BASE_URL + "albums/" + albumId, {
+  function populateArtist(artistId) {
+    fetch(BASE_URL + "artists/" + artistId + "/top-tracks?market=US", {
       headers: {
         Authorization: "Bearer " + accessToken,
       },
@@ -249,7 +218,7 @@
     // Mapping each track to the actualIdx will give the permutation
     // we want.
     let kd = kendall(tracks.map((t) => t.actualIdx));
-    return 1-(kd / (tracks.length * (tracks.length - 1))) * 2;
+    return 1 - (kd / (tracks.length * (tracks.length - 1))) * 2;
   }
 
   /**
