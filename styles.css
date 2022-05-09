@@ -69,7 +69,7 @@ header, section, #play-view article  {
   align-items: center;
 }
 
-section, #search-results article, section, #results-view article {
+header, section, #search-results article, section, #results-view article {
   flex-direction: column;
 }
 
