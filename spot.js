@@ -105,17 +105,9 @@
 
     let title = document.createElement("h3");
     title.textContent = info.name;
-
-    // let artist = document.createElement("p");
-    // artist.textContent = info.artists[0].name;
-
-    // let trackCount = document.createElement("p");
-    // trackCount.textContent = info.total_tracks + " Tracks";
-
+    
     a.appendChild(img);
     a.appendChild(title);
-    // a.appendChild(artist);
-    // a.appendChild(trackCount);
 
     return a;
   }
@@ -138,9 +130,6 @@
     downBtn.textContent = "Down";
     downBtn.addEventListener("click", () => moveTrackDown(track.gameIdx));
     btnContainer.appendChild(downBtn);
-
-    // a.appendChild(upBtn);
-    // a.appendChild(downBtn);
 
     a.appendChild(btnContainer);
     return a;

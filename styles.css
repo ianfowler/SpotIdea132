@@ -35,6 +35,14 @@ h1, h2, p  {
   color: var(--action-color);
 }
 
+input, section, #search-results article, #results-view article, #track-container {
+  padding: 10px;
+}
+
+button, input, section, article {
+  border-radius: 10px;
+}
+
 h3 {
   width: auto;
 }
@@ -47,75 +55,54 @@ p {
   font-size: 20pt;
 }
 
-
-main {
-  flex-direction: column;
-  align-items: center;
-  border: none;
-}
-
-header {
+main, header {
   justify-content: center;
-  align-items: center;
-  width: 100%;
 }
+
+
+header, section {
+  align-items: center;
+}
+
+section, #search-results article, section, #results-view article {
+  flex-direction: column;
+}
+
 
 input {
   width: 100%;
   max-width: 500px;
-  padding: 10px;
-  border-radius: 10px;
   border-width: 0;
   margin-bottom: 10px;
 }
 
-
 section {
   width: 90%;
   max-width: 1020px;
-  flex-direction: column;
-  align-items: center;
   box-shadow: 0 0 0.5em var(--foreground-color);
-  border-radius: 10px;
   padding-bottom: 10px;
-  padding: 10px;
 }
 
 #search-results {
-  width: 100%;
   flex-wrap: wrap;
-  justify-content: center;
 }
-
 
 #search-results article {
   width: 120px;
-  flex-direction: column;
   margin: 5px;
-  padding: 10px;
 }
 
 article {
-  border-radius: 10px;
   box-shadow: 0 0 0.3em var(--action-color);
   background-color: var(--background-color);
   color: var(--action-color);
   font-size: 10pt;
 }
 
-#results-view div  {
-  width: 100%;
-  justify-content: space-around;
-}
-
 #results-view article {
-  flex-direction: column;
-  width: 40%;
-  padding: 10px;
   text-align: center;
   list-style-position: inside;
 }
-
 
 #search-results article {
   background-color: var(--action-color);
@@ -136,14 +123,9 @@ article {
   border-radius: 5px;
 }
 
-#search-results p, #search-results h3 {
+#search-results h3 {
   margin: 0;
   word-wrap: break-word;
-}
-
-#track-container {
-  padding: 10px;
-  width: 90%;
 }
 
 #track-container button {
@@ -154,14 +136,9 @@ article {
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  margin-top: 0;
   margin-bottom: 10px;
   padding-left: 10px;
   padding-right: 10px;
-}
-
-#play-view > button {
-  margin: 10px;
 }
 
 #results-view article {
@@ -169,23 +146,10 @@ article {
 }
 
 button {
-  height: 10px;
-  width: 30px;
-}
-
-.hidden {
-  display: none;
-}
-
-button {
-  min-height: 30px;
-  height: auto;
-  width: auto;
   font-size: 12pt;
   border: 0.2em solid var(--action-color);
   background-color: var(--action-color);
   color: var(--background-color);
-  border-radius: 10px;
   transition: all 0.2s;
 }
 
@@ -199,7 +163,6 @@ ol {
   padding-left: 0;
 }
 
-
-#play-view article {
-  width: 100%;
+.hidden {
+  display: none;
 }
