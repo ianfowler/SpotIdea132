@@ -5,6 +5,8 @@
   const CLIENT_SECRET = "6a43cc4881f14290a5f485e60c88bc50";
   let accessToken;
 
+  const MAX_SEARCH_RESULTS = 5;
+
   let tracks;
 
   function init() {
@@ -29,8 +31,8 @@
     // Event handler for searching...
     let input = qs("input");
 
-    input.addEventListener("change", (e) => {
-      search(input.value);
+    input.addEventListener("change", () => {
+      if (input.value) search(input.value);
     });
 
     let doneBtn = qs("#play-view > button");
@@ -61,14 +63,16 @@
 
     // We search by making a request to this endpoint
     // We tell it we want albums and give it the query
-    fetch(`https://api.spotify.com/v1/search?type=artist&q=${name}`, {
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    })
+    fetch(
+      `https://api.spotify.com/v1/search?type=artist&q=${name}&limit=${MAX_SEARCH_RESULTS}`,
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         let resultArea = id("search-results");
         resultArea.innerHTML = "";
 
@@ -209,9 +213,6 @@
     const topTen = info.tracks;
     let gameIdxs = [...Array(topTen.length).keys()];
     gameIdxs.sort(() => Math.random() - 0.5);
-
-    console.log(topTen.map((track, idx) => track.popularity));
-
     tracks = topTen.map((track, idx) => {
       return {
         name: track.name,
