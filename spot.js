@@ -183,10 +183,25 @@
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        tracks = getTracks(data);
+        initializeTracks(data);
         populateTracks();
       });
+  }
+
+  function initializeTracks(info) {
+    const topTen = info.tracks;
+    let gameIdxs = [...Array(topTen.length).keys()];
+    gameIdxs.sort(() => Math.random() - 0.5);
+
+    console.log(topTen.map((track, idx) => track.popularity));
+
+    tracks = topTen.map((track, idx) => {
+      return {
+        name: track.name,
+        actualIdx: idx,
+        gameIdx: gameIdxs[idx],
+      };
+    });
   }
 
   function populateOrderings() {
