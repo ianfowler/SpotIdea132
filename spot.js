@@ -52,37 +52,36 @@
       });
   }
 
-  
-    /**
+  /**
    * Helper function to return the Response object if successful, otherwise
    * throws an Error with an error status and corresponding text.
    * @param {Response} response - response object to check for success/error
    * @returns {object} - Response if status code is ok (200-level)
    */
-     function checkStatus(response) {
-      if (!response.ok) {
-        throw Error("Error in request: " + response.statusText);
-      }
-      return response; // a Response object
+  function checkStatus(response) {
+    if (!response.ok) {
+      throw Error("Error in request: " + response.statusText);
     }
-  
-    /**
-     * Displays an error message on the page, hiding any previous results.
-     * If errMsg is passed as a string, that string is used to customize an error message.
-     * Otherwise (the errMsg is an object or missing), a generic message is displayed.
-     * @param {String} errMsg - optional specific error message to display on page.
-     */
-    function handleError(errMsg) {
-      if (typeof errMsg === "string") {
-        id("message-area").textContent = errMsg;
-      } else {
-        // the err object was passed, don't want to show it on the page;
-        // instead use generic error message.
-        id("message-area").textContent =
-          "An error ocurred fetching the launch data";
-      }
-      id("message-area").classList.remove("hidden");
+    return response; // a Response object
+  }
+
+  /**
+   * Displays an error message on the page, hiding any previous results.
+   * If errMsg is passed as a string, that string is used to customize an error message.
+   * Otherwise (the errMsg is an object or missing), a generic message is displayed.
+   * @param {String} errMsg - optional specific error message to display on page.
+   */
+  function handleError(errMsg) {
+    if (typeof errMsg === "string") {
+      id("message-area").textContent = errMsg;
+    } else {
+      // the err object was passed, don't want to show it on the page;
+      // instead use generic error message.
+      id("message-area").textContent =
+        "An error ocurred fetching the launch data";
     }
+    id("message-area").classList.remove("hidden");
+  }
 
   /**
    * Make a request to the Spotify API for a given artist.
@@ -106,23 +105,23 @@
       }
     )
       .then((response) => response.json())
-      .then((data) => {
-        let resultArea = id("search-results");
-        resultArea.innerHTML = "";
+      .then(buildArtistSearchResults);
+  }
 
-        console.log(data);
+  function buildArtistSearchResults(data) {
+    let resultArea = id("search-results");
+    resultArea.innerHTML = "";
 
-        data.artists.items.map(buildArtistElement).map((e) => {
-          resultArea.appendChild(e);
-        });
+    data.artists.items.map(buildArtistSearchResult).map((e) => {
+      resultArea.appendChild(e);
+    });
 
-        if (data.artists.items.length === 0) {
-          let noArtists = document.createElement("p");
-          noArtists.innerText =
-            "The search didn't return any artists on Spotify; please try again.";
-          resultArea.appendChild(noArtists);
-        }
-      });
+    if (data.artists.items.length === 0) {
+      let noArtists = document.createElement("p");
+      noArtists.innerText =
+        "The search didn't return any artists on Spotify; please try again.";
+      resultArea.appendChild(noArtists);
+    }
   }
 
   // DOM BUILDING
@@ -134,7 +133,7 @@
    * @param {object} info - an object as described here: https://developer.spotify.com/documentation/web-api/reference/#/operations/get-an-album
    * @return {DOMElement} The element representing that album
    */
-  function buildArtistElement(info) {
+  function buildArtistSearchResult(info) {
     let a = document.createElement("article");
     a.addEventListener("click", () => populateArtist(info.id));
 
