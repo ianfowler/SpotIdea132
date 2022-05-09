@@ -39,6 +39,13 @@
       populateScore();
       populateOrderings();
     });
+
+    id("play-view-done").addEventListener("click", () =>
+      showSection("results-view")
+    );
+    id("results-view-done").addEventListener("click", () =>
+      showSection("search-view")
+    );
   }
 
   /**
@@ -130,6 +137,15 @@
     return a;
   }
 
+  function showSection(sectionId) {
+    qsa("section").forEach((section) => {
+      if (!("hidden" in section.classList)) {
+        section.classList.add("hidden");
+      }
+    });
+    id(sectionId).classList.remove(...id(sectionId).classList);
+  }
+
   function sortTracksByGameIdx() {
     tracks.sort((a, b) => a.gameIdx - b.gameIdx);
   }
@@ -185,6 +201,7 @@
       .then((data) => {
         initializeTracks(data);
         populateTracks();
+        showSection("play-view");
       });
   }
 

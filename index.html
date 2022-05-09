@@ -24,7 +24,7 @@
 
     <main>
 
-      <section id="search-view">
+      <section id="search-view" >
         <h2>Choose an artist:</h1>
         <input type="text" placeholder="Search.."/>
         <div id="search-results">
@@ -33,17 +33,17 @@
       </section>
 
 
-      <section id="play-view">
+      <section id="play-view" class="hidden">
         <h2>Now order it!</h1>
 
         <div id="track-container">
           <!-- To be populated -->
         </div>
 
-        <button>Done</button>
+        <button id="play-view-done">Done</button>
       </section>
 
-      <section id="results-view">
+      <section id="results-view" class="hidden">
        <h2>Your score</h1>
        <p></p>
 
@@ -61,7 +61,7 @@
           </ol>
         </article>
        </div>
-       <button>Play again!</button>
+       <button id="results-view-done">Play again!</button>
       </section>
 
       

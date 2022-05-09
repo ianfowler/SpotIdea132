@@ -14,20 +14,28 @@ main, header {
 body {
   font-family: 'Cabin', sans-serif;
   background-color: var(--background-color);
-  color: var(--primary-color);
+  color: var(--foreground-color);
 }
 
 section {
   background-color: var(--foreground-color);
 }
 
-h1, h2 {
+h1, h2, #results-view p  {
   font-family: 'Koulen', cursive;
+  margin: 0;
+  color: var(--primary-color);
 }
+
+#results-view p  {
+  font-size: 20pt;
+}
+
 
 main {
   flex-direction: column;
   align-items: center;
+  border: none;
 }
 
 header {
@@ -46,18 +54,23 @@ nav {
 input {
   width: 100%;
   max-width: 500px;
-
+  padding: 10px;
+  border-radius: 10px;
+  border-width: 0;
+  margin-bottom: 10px;
 }
 
 section {
-  border: 0.1em solid black;
   width: 90%;
   max-width: 1020px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 0 0.5em var(--foreground-color);
+  border-radius: 10px;
+  padding-bottom: 10px;
+  padding: 10px;
 }
-
 
 #search-results {
   display: flex;
@@ -72,10 +85,26 @@ section {
   flex-direction: column;
   margin: 5px;
   padding: 10px;
+}
+
+article {
   border-radius: 10px;
   background-color: #eee;
-  color: var(--foreground-color);
+  display: flex;
 }
+
+#results-view div  {
+  display: flex;
+  justify-content: space-between;
+}
+
+#results-view article {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  text-align: center;
+}
+
 
 #search-results article:hover {
   transform: scale(1.1);
@@ -89,7 +118,6 @@ section {
 #search-results img {
   margin-bottom: 5px;
   border-radius: 5px;
-  aspect-ratio: 1;
 }
 
 #search-results p, #search-results h3 {
@@ -129,4 +157,9 @@ section {
 
 #results-view article {
   margin: 10px;
+}
+
+
+.hidden {
+  display: none;
 }
