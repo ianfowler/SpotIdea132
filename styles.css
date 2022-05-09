@@ -2,11 +2,8 @@
 :root {
   --background-color: #231c35;
   --foreground-color: #484564;
-
-  --primary-color: #E2DADA;
-  --card-color: #eee;
+  --action-color: #E2DADA;
 }
-
 
 main, header {
   display: flex
@@ -14,6 +11,13 @@ main, header {
 
 body {
   font-family: 'Cabin', sans-serif;
+}
+
+h1, h2, #results-view p, button {
+  font-family: 'Koulen', cursive;
+}
+
+body {
   background-color: var(--background-color);
   color: var(--foreground-color);
 }
@@ -23,9 +27,8 @@ section {
 }
 
 h1, h2, #results-view p  {
-  font-family: 'Koulen', cursive;
   margin: 0;
-  color: var(--primary-color);
+  color: var(--action-color);
 }
 
 #results-view p  {
@@ -90,23 +93,34 @@ section {
 
 article {
   border-radius: 10px;
-  background-color: var(--card-color);
-  box-shadow: 0 0 0.3em var(--primary-color);
+  box-shadow: 0 0 0.3em var(--action-color);
+  background-color: var(--background-color);
+  color: var(--action-color);
   display: flex;
+  font-size: 10pt;
 }
+
 
 #results-view div  {
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  justify-content: space-around;
 }
 
 #results-view article {
   display: flex;
   flex-direction: column;
   width: 40%;
+  padding: 10px;
   text-align: center;
+  list-style-position: inside;
 }
 
+
+#search-results article {
+  background-color: var(--action-color);
+  color: var(--background-color);
+}
 
 #search-results article:hover {
   transform: scale(1.1);
@@ -150,17 +164,38 @@ article {
   margin: 10px;
 }
 
-#results-view div  {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-}
-
 #results-view article {
   margin: 10px;
+  
 }
 
+button {
+  height: 10px;
+  width: 30px;
+}
 
 .hidden {
   display: none;
+}
+
+button {
+  min-height: 30px;
+  height: auto;
+  width: auto;
+  font-size: 12pt;
+  border: 0.2em solid var(--action-color);
+  background-color: var(--action-color);
+  color: var(--background-color);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background-color:var(--background-color);
+  color:var(--action-color);
+  box-shadow: inset var(--action-color) 0 0 0.06em 0;
+}
+
+ol {
+  padding-left: 0;
 }

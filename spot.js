@@ -76,6 +76,8 @@
         let resultArea = id("search-results");
         resultArea.innerHTML = "";
 
+        console.log(data);
+
         data.artists.items.map(buildArtistElement).map((e) => {
           resultArea.appendChild(e);
         });
