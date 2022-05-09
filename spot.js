@@ -10,21 +10,16 @@
   let tracks;
 
   function init() {
-    getAccessToken()
-    .then(() => {
+    getAccessToken().then(() => {
       // Event handler for searching...
-      let input = qs("input");
-
-      input.addEventListener("change", () => {
-        if (input.value) search(input.value);
+      let searchBar = qs("input");
+      searchBar.addEventListener("change", () => {
+        if (searchBar.value) search(searchBar.value);
       });
 
       let doneBtn = qs("#play-view > button");
+      doneBtn.addEventListener("click", populateResults);
 
-      doneBtn.addEventListener("click", (e) => {
-        populateScore();
-        populateOrderings();
-      });
       id("play-view-done").addEventListener("click", () =>
         showSection("results-view")
       );
@@ -35,7 +30,7 @@
   }
 
   function getAccessToken() {
-    fetch("https://accounts.spotify.com/api/token", {
+    return fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
         Authorization: "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET),
@@ -50,37 +45,6 @@
         accessToken = data.access_token;
       })
       .catch(handleError);
-  }
-
-  /**
-   * Helper function to return the Response object if successful, otherwise
-   * throws an Error with an error status and corresponding text.
-   * @param {Response} response - response object to check for success/error
-   * @returns {object} - Response if status code is ok (200-level)
-   */
-  function checkStatus(response) {
-    if (!response.ok) {
-      throw Error("Error in request: " + response.statusText);
-    }
-    return response; // a Response object
-  }
-
-  /**
-   * Displays an error message on the page, hiding any previous results.
-   * If errMsg is passed as a string, that string is used to customize an error message.
-   * Otherwise (the errMsg is an object or missing), a generic message is displayed.
-   * @param {String} errMsg - optional specific error message to display on page.
-   */
-  function handleError(errMsg) {
-    if (typeof errMsg === "string") {
-      id("message-area").textContent = errMsg;
-    } else {
-      // the err object was passed, don't want to show it on the page;
-      // instead use generic error message.
-      id("message-area").textContent =
-        "An error ocurred fetching the launch data";
-    }
-    id("message-area").classList.remove("hidden");
   }
 
   /**
@@ -150,7 +114,6 @@
         showSection("play-view");
       });
   }
-  
 
   /**
    * Takes info about an album and returns a DOM element
@@ -178,7 +141,6 @@
     return a;
   }
 
-  
   function buildTrackElement(track) {
     let a = document.createElement("article");
 
@@ -280,8 +242,11 @@
     });
   }
 
-  //  Results 
+  //  Results
   function populateResults() {
+    let scoreboard = qs("#results-view p");
+    scoreboard.textContent = (computeScore() * 100).toFixed(2) + "%";
+
     let actual = id("actual-ordering");
     actual.innerHTML = "";
     sortTracksByActualIdx();
@@ -301,8 +266,38 @@
     });
   }
 
+  /**
+   * Helper function to return the Response object if successful, otherwise
+   * throws an Error with an error status and corresponding text.
+   * @param {Response} response - response object to check for success/error
+   * @returns {object} - Response if status code is ok (200-level)
+   */
+  function checkStatus(response) {
+    if (!response.ok) {
+      throw Error("Error in request: " + response.statusText);
+    }
+    return response; // a Response object
+  }
 
-  // PROVIDED 
+  /**
+   * Displays an error message on the page, hiding any previous results.
+   * If errMsg is passed as a string, that string is used to customize an error message.
+   * Otherwise (the errMsg is an object or missing), a generic message is displayed.
+   * @param {String} errMsg - optional specific error message to display on page.
+   */
+  function handleError(errMsg) {
+    if (typeof errMsg === "string") {
+      id("message-area").textContent = errMsg;
+    } else {
+      // the err object was passed, don't want to show it on the page;
+      // instead use generic error message.
+      id("message-area").textContent =
+        "An error ocurred fetching the launch data";
+    }
+    id("message-area").classList.remove("hidden");
+  }
+
+  // PROVIDED
   /**
    * Compute the normalized kendall distance between the in game ordering
    * and the proper ordering of the tracks.
@@ -312,16 +307,6 @@
     // Mapping each track to the actualIdx will give the permutation
     // we want.
     return 1 - kendall(tracks.map((t) => t.actualIdx));
-  }
-
-
-  // PROVIDED 
-  /**
-   * Call computeScore and display the result on the page.
-   */
-  function populateScore() {
-    let e = qs("#results-view p");
-    e.textContent = (computeScore() * 100).toFixed(2) + "%";
   }
 
   init();
