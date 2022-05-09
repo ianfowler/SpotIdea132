@@ -10,6 +10,10 @@ function qsa(selector) {
   return document.querySelectorAll(selector);
 }
 
+function shuffle(l) {
+  return l.sort(() => Math.random() - 0.5);
+}
+
 /**
  * For this spotify project, there should be another score function
  * which formats the argument properly and normalizes the result.

@@ -37,6 +37,19 @@
    *                   access token is filled.
    */
   function getAccessToken() {
+    return fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        Authorization: "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "grant_type=client_credentials",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Once we receive the access token we store it in a global...
+        accessToken = data.access_token;
+      });
   }
 
   /**
@@ -44,6 +57,15 @@
    * handlers.
    */
   function init() {
+    getAccessToken()
+      .then(() => {
+        let input = qs("input");
+        input.addEventListener("change", (e) => {
+          albumSearch(input.value);
+        });
+
+        qs("#play-view > button").addEventListener("click", finishGame);
+      });
   }
 
   /**
@@ -55,8 +77,17 @@
    * TODO: Not certain how this should be implemented...
    *       I feel like there's a way to do it without rebuilding
    *       the entire DOM.
+   * TODO: YEP!
    */
   function moveTrackUp() {
+    let trackElement = this.parentElement.parentElement;
+    let container = trackElement.parentElement;
+    let above = trackElement.previousSibling;
+
+    if (!above)
+      return;
+
+    container.insertBefore(container.removeChild(trackElement), above);
   }
 
   /**
@@ -68,8 +99,17 @@
    * TODO: Not certain how this should be implemented...
    *       I feel like there's a way to do it without rebuilding
    *       the entire DOM.
+   * TODO: YEP!
    */
   function moveTrackDown() {
+    let trackElement = this.parentElement.parentElement;
+    let container = trackElement.parentElement;
+    let below = trackElement.nextSibling;
+
+    if (!below)
+      return;
+
+    container.insertBefore(container.replaceChild(trackElement, below), trackElement);
   }
 
   /**
@@ -82,6 +122,28 @@
    * @return {Element} the element representing the album
    */
   function buildAlbumElement(info) {
+    let a = document.createElement("article");
+    a.addEventListener("click", () => { startGame(info); });
+
+    let img = document.createElement("img");
+    img.src = info.images[0].url;
+    img.alt = "album art";
+
+    let title = document.createElement("h3");
+    title.textContent = info.name;
+
+    let artist = document.createElement("p");
+    artist.textContent = info.artists[0].name;
+
+    let trackCount = document.createElement("p");
+    trackCount.textContent = info.total_tracks + " Tracks";
+
+    a.appendChild(img);
+    a.appendChild(title);
+    a.appendChild(artist);
+    a.appendChild(trackCount);
+
+    return a;
   }
 
   /**
@@ -100,6 +162,26 @@
    * @return {DOM element} the element representing the track
    */
   function buildGameTrackElement(info) {
+    let a = document.createElement("article");
+
+    let h3 = document.createElement("h3");
+    h3.textContent = info.name;
+    a.appendChild(h3);
+
+    let btnContainer = document.createElement("div");
+
+    let upBtn = document.createElement("button");
+    upBtn.textContent = "Up";
+    upBtn.addEventListener("click", moveTrackUp);
+    btnContainer.appendChild(upBtn);
+
+    let downBtn = document.createElement("button");
+    downBtn.textContent = "Down";
+    downBtn.addEventListener("click", moveTrackDown);
+    btnContainer.appendChild(downBtn);
+
+    a.appendChild(btnContainer);
+    return a;
   }
 
   /**
@@ -114,6 +196,9 @@
    * @return {DOM element} the element representing the track
    */
   function buildTrackComparisonElement(info) {
+    let li = document.createElement("li");
+    li.textContent = info.name;
+    return li;
   }
 
   /**
@@ -129,6 +214,27 @@
    *                   search results are added to the page
    */
   function albumSearch(query) {
+    // Prepare to use query in a URI query param
+    query = encodeURIComponent(query);
+
+    // We search by making a request to this endpoint
+    // We tell it we want albums and give it the query
+    fetch(BASE_URL + `search?type=album&q=${query}`, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      let resultArea = id("search-results");
+      resultArea.innerHTML = "";
+      data.albums.items
+        .filter((album) => album.total_tracks > 1)
+        .map(buildAlbumElement)
+        .map((e) => {
+          resultArea.appendChild(e);
+        });
+    });
   }
 
   /**
@@ -142,6 +248,23 @@
    *                   of tracks
    */
   function getFullTracksFromAlbum(album) {
+    // The references specifies 50 uris max...
+    // Im not checking... are there any albums that big?
+    return fetch(BASE_URL + `albums/${album.id}/tracks`, {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => data.items)
+      .then((tracks) => tracks.map((t) => t.id).join(","))
+      .then((ids) => fetch(`${BASE_URL}tracks?ids=${ids}`, {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }))
+      .then((response) => response.json())
+      .then((data) => data.tracks);
   }
 
   /**
@@ -158,9 +281,20 @@
    *                         the Spotify Web API reference
    */
   function startGame(album) {
+    getFullTracksFromAlbum(album)
+    .then(shuffle)
+    .then((ts) => { tracks = ts; return tracks; })
+    .then((tracks) => tracks.map(buildGameTrackElement))
+    .then((elements) => {
+      let trackArea = id("track-container");
+      trackArea.innerHTML = "";
+      elements.map((e) => { trackArea.appendChild(e) });
+    });
   }
 
   /**
+   * TODO: maybe this is not useful...
+   *
    * Compute the normalized kendall distance between the player's
    * ordering of the tracks and the proper ordering.
    *
@@ -182,6 +316,29 @@
    * and one for the proper ordering.
    */
   function finishGame() {
+    // Add the index of each track in the player's ordering
+    // to the track objects.
+    tracks.forEach((t,i) => { t.playerOrder = i; });
+
+    let user = id("your-ordering");
+    user.innerHTML = "";
+    tracks.map(buildTrackComparisonElement).forEach((t) => { user.appendChild(t); });
+
+    // Sort tracks according to popularity for proper ordering.
+    tracks.sort((a, b) => b.popularity - a.popularity);
+
+    let actual = id("actual-ordering");
+    actual.innerHTML = "";
+    tracks.map(buildTrackComparisonElement).forEach((t) => { actual.appendChild(t); });
+
+    // TODO: I think I should add the normalization to the kendall function...
+    let kd = kendall(tracks.map((t) => t.playerOrder));
+    let score = 1-(kd / (tracks.length * (tracks.length - 1))) * 2;
+
+    let e = qs("#results-view p");
+    e.textContent = (score * 100).toFixed(2) + "%";
   }
+
+  init();
 
 })();
