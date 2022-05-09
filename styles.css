@@ -4,6 +4,7 @@
   --foreground-color: #484564;
 
   --primary-color: #E2DADA;
+  --card-color: #eee;
 }
 
 
@@ -89,7 +90,8 @@ section {
 
 article {
   border-radius: 10px;
-  background-color: #eee;
+  background-color: var(--card-color);
+  box-shadow: 0 0 0.3em var(--primary-color);
   display: flex;
 }
 
@@ -142,7 +144,6 @@ article {
   margin-bottom: 10px;
   padding-left: 10px;
   padding-right: 10px;
-  background-color: #eee;
 }
 
 #play-view > button {
