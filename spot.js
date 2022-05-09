@@ -81,6 +81,13 @@
         data.artists.items.map(buildArtistElement).map((e) => {
           resultArea.appendChild(e);
         });
+
+        if (data.artists.items.length === 0) {
+          let noArtists = document.createElement("p");
+          noArtists.innerText =
+            "The search didn't return any artists on Spotify; please try again.";
+          resultArea.appendChild(noArtists);
+        }
       });
   }
 
@@ -105,7 +112,7 @@
 
     let title = document.createElement("h3");
     title.textContent = info.name;
-    
+
     a.appendChild(img);
     a.appendChild(title);
 

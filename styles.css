@@ -52,12 +52,13 @@ h3 {
   width: auto;
 }
 
-p, input, #play-view article {
+p, input, #play-view article, #results-view > div {
   margin-bottom: 10px;
 }
 
 #results-view p  {
   font-size: 20pt;
+  margin-bottom: 0;
 }
 
 main, header {
@@ -82,7 +83,7 @@ section {
   width: 90%;
   max-width: 1020px;
   box-shadow: 0 0 0.5em var(--foreground-color);
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 #search-results {
@@ -99,7 +100,7 @@ article {
   font-size: 10pt;
 }
 
-#results-view article {
+#results-view article, p {
   text-align: center;
   list-style-position: inside;
 }
