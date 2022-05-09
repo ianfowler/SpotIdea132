@@ -25,7 +25,7 @@
 
     doneBtn.addEventListener("click", (e) => {
       populateScore();
-      populateOrderings();
+      populateResults();
     });
 
     id("play-view-done").addEventListener("click", () =>
@@ -108,6 +108,17 @@
       .then(buildArtistSearchResults);
   }
 
+  // Segue between views
+  function showSection(sectionId) {
+    qsa("section").forEach((section) => {
+      if (!("hidden" in section.classList)) {
+        section.classList.add("hidden");
+      }
+    });
+    id(sectionId).classList.remove(...id(sectionId).classList);
+  }
+
+  // Artist
   function buildArtistSearchResults(data) {
     let resultArea = id("search-results");
     resultArea.innerHTML = "";
@@ -124,7 +135,20 @@
     }
   }
 
-  // DOM BUILDING
+  function populateArtist(artistId) {
+    fetch(BASE_URL + "artists/" + artistId + "/top-tracks?market=US", {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        initializeTracks(data);
+        populateTracks();
+        showSection("play-view");
+      });
+  }
+  
 
   /**
    * Takes info about an album and returns a DOM element
@@ -152,6 +176,7 @@
     return a;
   }
 
+  
   function buildTrackElement(track) {
     let a = document.createElement("article");
 
@@ -175,14 +200,7 @@
     return a;
   }
 
-  function showSection(sectionId) {
-    qsa("section").forEach((section) => {
-      if (!("hidden" in section.classList)) {
-        section.classList.add("hidden");
-      }
-    });
-    id(sectionId).classList.remove(...id(sectionId).classList);
-  }
+  // Tracks UI
 
   function sortTracksByGameIdx() {
     tracks.sort((a, b) => a.gameIdx - b.gameIdx);
@@ -201,6 +219,7 @@
     });
   }
 
+  // PROVIDED
   function moveTrackUp(currentGameIdx) {
     if (currentGameIdx === 0) return;
     const tempTrack = {
@@ -215,6 +234,7 @@
     populateTracks();
   }
 
+  // PROVIDED
   function moveTrackDown(currentGameIdx) {
     if (currentGameIdx === tracks.length - 1) return;
     const tempTrack = {
@@ -229,20 +249,7 @@
     populateTracks();
   }
 
-  function populateArtist(artistId) {
-    fetch(BASE_URL + "artists/" + artistId + "/top-tracks?market=US", {
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        initializeTracks(data);
-        populateTracks();
-        showSection("play-view");
-      });
-  }
-
+  // PROVIDED
   function initializeTracks(info) {
     const topTen = info.tracks;
     let gameIdxs = [...Array(topTen.length).keys()];
@@ -256,7 +263,8 @@
     });
   }
 
-  function populateOrderings() {
+  //  Results 
+  function populateResults() {
     let actual = id("actual-ordering");
     actual.innerHTML = "";
     sortTracksByActualIdx();
@@ -276,6 +284,8 @@
     });
   }
 
+
+  // PROVIDED 
   /**
    * Compute the normalized kendall distance between the in game ordering
    * and the proper ordering of the tracks.
@@ -287,6 +297,8 @@
     return 1 - kendall(tracks.map((t) => t.actualIdx));
   }
 
+
+  // PROVIDED 
   /**
    * Call computeScore and display the result on the page.
    */
