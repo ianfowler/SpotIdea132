@@ -21,18 +21,23 @@ h1, h2, #results-view p, button {
   font-family: 'Koulen', cursive;
 }
 
-body {
-  background-color: var(--background-color);
-  color: var(--foreground-color);
+
+button, #search-results article {
+  background-color: var(--action-color);
+  color: var(--background-color);
+}
+
+body, button:hover, article {
+  background-color:var(--background-color);
+  color: var(--action-color);
 }
 
 section {
   background-color: var(--foreground-color);
 }
 
-h1, h2, p  {
+h1, h2, p, #search-results h3  {
   margin: 0;
-  color: var(--action-color);
 }
 
 input, section, #search-results article, #results-view article, #track-container {
@@ -47,7 +52,7 @@ h3 {
   width: auto;
 }
 
-p {
+p, input, #play-view article {
   margin-bottom: 10px;
 }
 
@@ -59,8 +64,7 @@ main, header {
   justify-content: center;
 }
 
-
-header, section {
+header, section, #play-view article  {
   align-items: center;
 }
 
@@ -68,12 +72,10 @@ section, #search-results article, section, #results-view article {
   flex-direction: column;
 }
 
-
 input {
   width: 100%;
   max-width: 500px;
   border-width: 0;
-  margin-bottom: 10px;
 }
 
 section {
@@ -94,19 +96,12 @@ section {
 
 article {
   box-shadow: 0 0 0.3em var(--action-color);
-  background-color: var(--background-color);
-  color: var(--action-color);
   font-size: 10pt;
 }
 
 #results-view article {
   text-align: center;
   list-style-position: inside;
-}
-
-#search-results article {
-  background-color: var(--action-color);
-  color: var(--background-color);
 }
 
 #search-results article:hover {
@@ -123,20 +118,13 @@ article {
   border-radius: 5px;
 }
 
-#search-results h3 {
-  margin: 0;
-  word-wrap: break-word;
-}
-
 #track-container button {
   margin-left: 10px;
 }
 
 #play-view article {
   justify-content: space-between;
-  align-items: center;
   height: 50px;
-  margin-bottom: 10px;
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -148,14 +136,10 @@ article {
 button {
   font-size: 12pt;
   border: 0.2em solid var(--action-color);
-  background-color: var(--action-color);
-  color: var(--background-color);
   transition: all 0.2s;
 }
 
 button:hover {
-  background-color:var(--background-color);
-  color:var(--action-color);
   box-shadow: inset var(--action-color) 0 0 0.06em 0;
 }
 
