@@ -139,6 +139,9 @@
     downBtn.addEventListener("click", () => moveTrackDown(track.gameIdx));
     btnContainer.appendChild(downBtn);
 
+    // a.appendChild(upBtn);
+    // a.appendChild(downBtn);
+
     a.appendChild(btnContainer);
     return a;
   }

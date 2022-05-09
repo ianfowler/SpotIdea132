@@ -5,8 +5,12 @@
   --action-color: #E2DADA;
 }
 
-main, header {
+main, header, section, div, article, #search-results {
   display: flex
+}
+
+#track-container {
+  display: block;
 }
 
 body {
@@ -26,9 +30,17 @@ section {
   background-color: var(--foreground-color);
 }
 
-h1, h2, #results-view p  {
+h1, h2, p  {
   margin: 0;
   color: var(--action-color);
+}
+
+h3 {
+  width: auto;
+}
+
+p {
+  margin-bottom: 10px;
 }
 
 #results-view p  {
@@ -48,13 +60,6 @@ header {
   width: 100%;
 }
 
-nav {
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
-
 input {
   width: 100%;
   max-width: 500px;
@@ -64,10 +69,10 @@ input {
   margin-bottom: 10px;
 }
 
+
 section {
   width: 90%;
   max-width: 1020px;
-  display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: 0 0 0.5em var(--foreground-color);
@@ -77,14 +82,13 @@ section {
 }
 
 #search-results {
-  display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: center;
 }
 
+
 #search-results article {
-  display: flex;
   width: 120px;
   flex-direction: column;
   margin: 5px;
@@ -96,19 +100,15 @@ article {
   box-shadow: 0 0 0.3em var(--action-color);
   background-color: var(--background-color);
   color: var(--action-color);
-  display: flex;
   font-size: 10pt;
 }
 
-
 #results-view div  {
-  display: flex;
   width: 100%;
   justify-content: space-around;
 }
 
 #results-view article {
-  display: flex;
   flex-direction: column;
   width: 40%;
   padding: 10px;
@@ -150,11 +150,11 @@ article {
   margin-left: 10px;
 }
 
-#track-container article {
-  display: flex;
+#play-view article {
   justify-content: space-between;
   align-items: center;
   height: 50px;
+  margin-top: 0;
   margin-bottom: 10px;
   padding-left: 10px;
   padding-right: 10px;
@@ -166,7 +166,6 @@ article {
 
 #results-view article {
   margin: 10px;
-  
 }
 
 button {
@@ -198,4 +197,9 @@ button:hover {
 
 ol {
   padding-left: 0;
+}
+
+
+#play-view article {
+  width: 100%;
 }
