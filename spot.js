@@ -10,30 +10,28 @@
   let tracks;
 
   function init() {
-    // We make a POST request to this endpoint to get an 'accessToken'
-    // based on the client information...
-    // (I had to set this up on the developer dashboard)
+    getAccessToken()
+    .then(() => {
+      // Event handler for searching...
+      let input = qs("input");
 
-    // Event handler for searching...
-    let input = qs("input");
+      input.addEventListener("change", () => {
+        if (input.value) search(input.value);
+      });
 
-    input.addEventListener("change", () => {
-      if (input.value) search(input.value);
+      let doneBtn = qs("#play-view > button");
+
+      doneBtn.addEventListener("click", (e) => {
+        populateScore();
+        populateOrderings();
+      });
+      id("play-view-done").addEventListener("click", () =>
+        showSection("results-view")
+      );
+      id("results-view-done").addEventListener("click", () =>
+        showSection("search-view")
+      );
     });
-
-    let doneBtn = qs("#play-view > button");
-
-    doneBtn.addEventListener("click", (e) => {
-      populateScore();
-      populateOrderings();
-    });
-
-    id("play-view-done").addEventListener("click", () =>
-      showSection("results-view")
-    );
-    id("results-view-done").addEventListener("click", () =>
-      showSection("search-view")
-    );
   }
 
   function getAccessToken() {
@@ -45,11 +43,13 @@
       },
       body: "grant_type=client_credentials",
     })
+      .then(checkStatus)
       .then((response) => response.json())
       .then((data) => {
         // Once we receive the access token we store it in a global...
         accessToken = data.access_token;
-      });
+      })
+      .catch(handleError);
   }
 
   /**
@@ -104,8 +104,10 @@
         },
       }
     )
+      .then(checkStatus)
       .then((response) => response.json())
-      .then(buildArtistSearchResults);
+      .then(buildArtistSearchResults)
+      .catch(handleError);
   }
 
   function buildArtistSearchResults(data) {
@@ -235,12 +237,14 @@
         Authorization: "Bearer " + accessToken,
       },
     })
+      .then(checkStatus)
       .then((response) => response.json())
       .then((data) => {
         initializeTracks(data);
         populateTracks();
         showSection("play-view");
-      });
+      })
+      .catch(handleError);
   }
 
   function initializeTracks(info) {
